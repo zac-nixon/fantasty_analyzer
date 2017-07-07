@@ -116,14 +116,5 @@ def fetchStats():
     return players
 
 
-requiredPositions = ['PG','SG','SF','PF','C','G','F','UTIL']
-def craftRoster(players):
-    players = sorted(players,key=lambda x: x[POINTS],reverse=False)
-
-
-def rosterMaker(players,indx,)
-
-
 playersDict = fetchStats()
 playersList = fetchDKStats(playersDict)
-craftRoster(playersList)
