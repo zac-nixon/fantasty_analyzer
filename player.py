@@ -7,9 +7,11 @@ TE = 'TE'
 DST = 'DST'
 FLEX = 'FLEX'
 
+
 class Player:
-    def __init__(self,position,name,salary,opposition,avgpts,games):
-        #Common
+
+    def __init__(self, position, name, salary, opposition, avgpts, games):
+        # Common
         self.position = position
         self.name = name
         self.opposition = opposition
@@ -20,20 +22,20 @@ class Player:
 
         self.team = ""
 
-        #Offense
+        # Offense
 
-        #Passing
+        # Passing
         self.passing_td = 0
         self.pass_yd = 0
         self.interception = 0
         self.attempts = 0
 
-        #Rushing
+        # Rushing
         self.rush_td = 0
         self.rush_yd = 0
         self.rushes = 0
 
-        #Recieving
+        # Recieving
         self.recv_td = 0
         self.recv_yd = 0
         self.recv = 0
@@ -41,7 +43,7 @@ class Player:
 
         self.fumbles = 0
 
-        #Defense
+        # Defense
         self.sack = 0
         self.def_interception = 0
         self.fumb_recovery = 0
@@ -51,7 +53,7 @@ class Player:
         self.pass_yd_allowed = 0
         self.rush_yd_allowed = 0
 
-        #Total pts projected
+        # Total pts projected
         self.fantasy_points = 0
 
     def getContribution(self):
@@ -87,7 +89,6 @@ class Player:
     def scoreWR(self):
         score = self.scoreReceiving()
         return score
-
 
     def scorePassing(self):
         score = self.passing_td * 4
@@ -135,6 +136,5 @@ class Player:
             score += -4
         return score
 
-
     def __str__(self):
-        return "name = " + self.name + " position = " + self.position + " salary = " + str(self.salary) + " pts = " + str(self.fantasy_points) + " $/pt = " + str(self.salary/self.fantasy_points) + " team = " + self.team
+        return "name = " + self.name + " position = " + self.position + " salary = " + str(self.salary) + " pts = " + str(self.fantasy_points) + " $/pt = " + str(self.salary / self.fantasy_points) + " team = " + self.team

@@ -5,16 +5,20 @@ from adjust import *
 from create import *
 import sys
 
-#Assigns the defense object to the particular player
-def correlate(players,m):
-        for p in players:
-            opposition = p.opposition.replace('@','')
-            p.oppositionObj = m[opposition]
+# Assigns the defense object to the particular player
 
-def blackList(teams,l):
+
+def correlate(players, m):
+    for p in players:
+        opposition = p.opposition.replace('@', '')
+        p.oppositionObj = m[opposition]
+
+
+def blackList(teams, l):
     for t in teams:
-        l = filter(lambda x: x.opposition.replace('@','') != t,l)
+        l = filter(lambda x: x.opposition.replace('@', '') != t, l)
     return l
+
 
 def hashDST(DSTs):
     m = {}
@@ -22,7 +26,7 @@ def hashDST(DSTs):
         m[d.name] = d
     return m
 
-for v in ['qb.csv','rb.csv','wr.csv','te.csv','dst.csv']:
+for v in ['qb.csv', 'rb.csv', 'wr.csv', 'te.csv', 'dst.csv']:
     normalize(v)
 
 QBs = fetchQBs()
@@ -32,34 +36,35 @@ TEs = fetchTEs()
 DSTs = fetchDSTs()
 dMap = hashDST(DSTs)
 
+
 def correctPoints():
     return 0
 
-#Black list
-fList = ['Chi','GB','Was','KC','Mia','NO','Sea','Ind']
-QBs = blackList(fList,QBs)
-RBs = blackList(fList,RBs)
-WRs = blackList(fList,WRs)
-TEs = blackList(fList,TEs)
-DSTs = blackList(fList,DSTs)
+# Black list
+fList = ['Chi', 'GB', 'Was', 'KC', 'Mia', 'NO', 'Sea', 'Ind']
+QBs = blackList(fList, QBs)
+RBs = blackList(fList, RBs)
+WRs = blackList(fList, WRs)
+TEs = blackList(fList, TEs)
+DSTs = blackList(fList, DSTs)
 
-correlate(QBs,dMap)
-correlate(RBs,dMap)
-correlate(WRs,dMap)
-correlate(TEs,dMap)
+correlate(QBs, dMap)
+correlate(RBs, dMap)
+correlate(WRs, dMap)
+correlate(TEs, dMap)
 
-QBs = filter(lambda x: x.avgpts > 1,QBs)
-RBs = filter(lambda x: x.avgpts > 1,RBs)
-WRs = filter(lambda x: x.avgpts > 1,WRs)
-TEs = filter(lambda x: x.avgpts > 1,TEs)
-DSTs = filter(lambda x: x.salary > 2500,DSTs)
+QBs = filter(lambda x: x.avgpts > 1, QBs)
+RBs = filter(lambda x: x.avgpts > 1, RBs)
+WRs = filter(lambda x: x.avgpts > 1, WRs)
+TEs = filter(lambda x: x.avgpts > 1, TEs)
+DSTs = filter(lambda x: x.salary > 2500, DSTs)
 
-adjustPlayers(QBs,RBs,WRs,TEs,DSTs)
+adjustPlayers(QBs, RBs, WRs, TEs, DSTs)
 
-QBs = filter(lambda x: x.fantasy_points > 10 and x.salary > 4000,QBs)
-RBs = filter(lambda x: x.fantasy_points > 7 and x.salary > 4000,RBs)
-WRs = filter(lambda x: x.fantasy_points > 7 and x.salary > 4000,WRs)
-TEs = filter(lambda x: x.fantasy_points > 3 and x.salary > 3000,TEs)
+QBs = filter(lambda x: x.fantasy_points > 10 and x.salary > 4000, QBs)
+RBs = filter(lambda x: x.fantasy_points > 7 and x.salary > 4000, RBs)
+WRs = filter(lambda x: x.fantasy_points > 7 and x.salary > 4000, WRs)
+TEs = filter(lambda x: x.fantasy_points > 3 and x.salary > 3000, TEs)
 
 QBs.sort(key=lambda x: x.fantasy_points, reverse=True)
 RBs.sort(key=lambda x: x.fantasy_points, reverse=True)
@@ -93,8 +98,8 @@ for p in DSTs:
 candidates = list()
 for q in QBs:
     roster = Roster()
-    roster.addPlayer(q,False)
-    addWR(candidates,roster,RBs,WRs,TEs,DSTs)
+    roster.addPlayer(q, False)
+    addWR(candidates, roster, RBs, WRs, TEs, DSTs)
 
 
 l = list(candidates)
@@ -104,6 +109,6 @@ for r in l:
     output += r.to_csv() + "\n"
     print str(r)
 
-with open("./roster.csv","w") as f:
+with open("./roster.csv", "w") as f:
     f.write(output)
     f.close()

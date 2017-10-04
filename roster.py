@@ -9,7 +9,9 @@ FlexLimit = 1
 DSTLimit = 1
 cap = 50000
 
+
 class Roster:
+
     def __init__(self):
         self.expenditure = 0
         self.projectedPoints = 0
@@ -20,12 +22,12 @@ class Roster:
         self.FLEX = []
         self.DST = []
 
-    def canAfford(self,player):
+    def canAfford(self, player):
         if self.expenditure + player.salary <= cap:
             return True
         return False
 
-    def addPlayer(self,player,flex):
+    def addPlayer(self, player, flex):
 
         if not self.canAfford(player):
             return False
@@ -49,7 +51,7 @@ class Roster:
             self.projectedPoints += player.fantasy_points
         return b
 
-    def popPlayer(self,position):
+    def popPlayer(self, position):
         if position == QB:
             l = self.QBs
         if position == RB:
@@ -67,37 +69,37 @@ class Roster:
         self.expenditure -= p.salary
         self.projectedPoints -= p.fantasy_points
 
-    def addQB(self,QB):
+    def addQB(self, QB):
         if len(self.QBs) + 1 <= QBLimit:
             self.QBs.append(QB)
             return True
         return False
 
-    def addRB(self,RB):
+    def addRB(self, RB):
         if len(self.RBs) + 1 <= RBLimit:
             self.RBs.append(RB)
             return True
         return False
 
-    def addWR(self,WR):
+    def addWR(self, WR):
         if len(self.WRs) + 1 <= WRLimit:
             self.WRs.append(WR)
             return True
         return False
 
-    def addTE(self,TE):
+    def addTE(self, TE):
         if len(self.TEs) + 1 <= TELimit:
             self.TEs.append(TE)
             return True
         return False
 
-    def addFLEX(self,FLEX):
+    def addFLEX(self, FLEX):
         if len(self.FLEX) + 1 <= FlexLimit:
             self.FLEX.append(FLEX)
             return True
         return False
 
-    def addDST(self,D):
+    def addDST(self, D):
         if len(self.DST) + 1 <= DSTLimit:
             self.DST.append(D)
             return True
@@ -108,35 +110,36 @@ class Roster:
 
     def __str__(self):
         s = ""
-        for i,v in enumerate(self.QBs):
+        for i, v in enumerate(self.QBs):
             s += "QB " + str(i + 1) + ": " + str(v) + "\n"
-        for i,v in enumerate(self.RBs):
+        for i, v in enumerate(self.RBs):
             s += "RB " + str(i + 1) + ": " + str(v) + "\n"
-        for i,v in enumerate(self.WRs):
+        for i, v in enumerate(self.WRs):
             s += "WR " + str(i + 1) + ": " + str(v) + "\n"
-        for i,v in enumerate(self.TEs):
+        for i, v in enumerate(self.TEs):
             s += "TE " + str(i + 1) + ": " + str(v) + "\n"
-        for i,v in enumerate(self.FLEX):
+        for i, v in enumerate(self.FLEX):
             s += "FLEX " + str(i + 1) + ": " + str(v) + "\n"
-        for i,v in enumerate(self.DST):
+        for i, v in enumerate(self.DST):
             s += "DST " + str(i + 1) + ": " + str(v) + "\n"
 
-        s += "Cost = " + str(self.expenditure) + "," + str(cap) + " projected = " + str(self.projectedPoints)
+        s += "Cost = " + str(self.expenditure) + "," + str(cap) + \
+            " projected = " + str(self.projectedPoints)
         return s
 
     def to_csv(self):
         s = ""
-        for i,v in enumerate(self.QBs):
+        for i, v in enumerate(self.QBs):
             s += v.name + " " + str(v.fantasy_points) + ","
-        for i,v in enumerate(self.RBs):
+        for i, v in enumerate(self.RBs):
             s += v.name + " " + str(v.fantasy_points) + ","
-        for i,v in enumerate(self.WRs):
+        for i, v in enumerate(self.WRs):
             s += v.name + " " + str(v.fantasy_points) + ","
-        for i,v in enumerate(self.TEs):
+        for i, v in enumerate(self.TEs):
             s += v.name + " " + str(v.fantasy_points) + ","
-        for i,v in enumerate(self.FLEX):
+        for i, v in enumerate(self.FLEX):
             s += v.name + " " + str(v.fantasy_points) + ","
-        for i,v in enumerate(self.DST):
+        for i, v in enumerate(self.DST):
             s += v.name + " " + str(v.fantasy_points) + ","
         s += str(self.expenditure)
         return s
