@@ -14,7 +14,7 @@ def addB(l,B,C):
         if len(l) == 3:
             addC(list(l),C)
         else:
-            addB(list(l),B[i:],C)
+            addB(list(l),B[i + 1:],C)
         l.pop()
 
 A = ['A1','A2']

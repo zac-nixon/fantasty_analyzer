@@ -1,26 +1,27 @@
 from player import *
+import copy
+
+QBLimit = 1
+RBLimit = 2
+WRLimit = 3
+TELimit = 1
+FlexLimit = 1
+DSTLimit = 1
+cap = 50000
 
 class Roster:
     def __init__(self):
-        #TODO change this back to 50,000
-        self.cap = 50000
         self.expenditure = 0
+        self.projectedPoints = 0
         self.QBs = []
         self.RBs = []
         self.WRs = []
         self.TEs = []
         self.FLEX = []
         self.DST = []
-        self.QBLimit = 1
-        self.RBLimit = 2
-        self.WRLimit = 3
-        self.TELimit = 1
-        self.FlexLimit = 1
-        self.DSTLimit = 1
-        self.projectedPoints = 0
 
     def canAfford(self,player):
-        if self.expenditure + player.salary <= self.cap:
+        if self.expenditure + player.salary <= cap:
             return True
         return False
 
@@ -48,67 +49,62 @@ class Roster:
             self.projectedPoints += player.fantasy_points
         return b
 
-    def removePlayer(self,player):
-        l = []
-        if player.position == QB:
+    def popPlayer(self,position):
+        if position == QB:
             l = self.QBs
-        if player.position == RB:
+        if position == RB:
             l = self.RBs
-        if player.position == WR:
+        if position == WR:
             l = self.WRs
-        if player.position == TE:
+        if position == TE:
             l = self.TEs
-        if player.position == DST:
+        if position == DST:
             l = self.DST
+        if position == FLEX:
+            l = self.FLEX
 
-        for i, v in enumerate(l):
-            if v.name == player.name:
-                del l[i]
-                return
-
-        for i, v in enumerate(self.FLEX):
-            if v.name == player.name:
-                del self.FLEX[i]
-                return
+        p = l.pop()
+        self.expenditure -= p.salary
+        self.projectedPoints -= p.fantasy_points
 
     def addQB(self,QB):
-        if len(self.QBs) + 1 <= self.QBLimit:
+        if len(self.QBs) + 1 <= QBLimit:
             self.QBs.append(QB)
             return True
         return False
 
     def addRB(self,RB):
-        if len(self.RBs) + 1 <= self.RBLimit:
+        if len(self.RBs) + 1 <= RBLimit:
             self.RBs.append(RB)
             return True
         return False
 
     def addWR(self,WR):
-        if len(self.WRs) + 1 <= self.WRLimit:
+        if len(self.WRs) + 1 <= WRLimit:
             self.WRs.append(WR)
             return True
         return False
 
     def addTE(self,TE):
-        if len(self.TEs) + 1 <= self.TELimit:
+        if len(self.TEs) + 1 <= TELimit:
             self.TEs.append(TE)
             return True
         return False
 
     def addFLEX(self,FLEX):
-        if len(self.FLEX) + 1 <= self.FlexLimit:
+        if len(self.FLEX) + 1 <= FlexLimit:
             self.FLEX.append(FLEX)
             return True
         return False
 
     def addDST(self,D):
-        if len(self.DST) + 1 <= self.DSTLimit:
+        if len(self.DST) + 1 <= DSTLimit:
             self.DST.append(D)
             return True
         return False
 
     def isValid(self):
-        return len(self.QBs) == self.QBLimit and len(self.RBs) == self.RBLimit and len(self.WRs) == self.WRLimit and len(self.TEs) == self.TELimit and len(self.FLEX) == self.FlexLimit and len(self.DST) == self.DSTLimit and self.expenditure <= self.cap
+        return len(self.QBs) == QBLimit and len(self.RBs) == RBLimit and len(self.WRs) == WRLimit and len(self.TEs) == TELimit and len(self.FLEX) == FlexLimit and len(self.DST) == DSTLimit and self.expenditure <= cap
 
     def __str__(self):
         s = ""
@@ -125,7 +121,7 @@ class Roster:
         for i,v in enumerate(self.DST):
             s += "DST " + str(i + 1) + ": " + str(v) + "\n"
 
-        s += "Cost = " + str(self.expenditure) + "," + str(self.cap) + " projected = " + str(self.projectedPoints)
+        s += "Cost = " + str(self.expenditure) + "," + str(cap) + " projected = " + str(self.projectedPoints)
         return s
 
     def to_csv(self):
@@ -166,3 +162,15 @@ class Roster:
         h1 = self.__hash__()
         h2 = other.__hash__()
         return h1 == h2
+
+    def __deepcopy__(self, memo):
+        r = Roster()
+        r.expenditure = copy.deepcopy(self.expenditure)
+        r.projectedPoints = copy.deepcopy(self.projectedPoints)
+        r.QBs = copy.deepcopy(self.QBs)
+        r.RBs = copy.deepcopy(self.RBs)
+        r.WRs = copy.deepcopy(self.WRs)
+        r.TEs = copy.deepcopy(self.TEs)
+        r.FLEX = copy.deepcopy(self.FLEX)
+        r.DST = copy.deepcopy(self.DST)
+        return r
