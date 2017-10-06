@@ -3,11 +3,10 @@ from reader import *
 from roster import *
 from adjust import *
 from create import *
+import multiprocessing
 import sys
 
 # Assigns the defense object to the particular player
-
-
 def correlate(players, m):
     for p in players:
         opposition = p.opposition.replace('@', '')
@@ -36,12 +35,8 @@ TEs = fetchTEs()
 DSTs = fetchDSTs()
 dMap = hashDST(DSTs)
 
-
-def correctPoints():
-    return 0
-
 # Black list
-fList = ['Chi', 'GB', 'Was', 'KC', 'Mia', 'NO', 'Sea', 'Ind']
+fList = ['TB','NE','KC','Hou', 'Min', 'Chi']
 QBs = blackList(fList, QBs)
 RBs = blackList(fList, RBs)
 WRs = blackList(fList, WRs)
@@ -71,44 +66,16 @@ RBs.sort(key=lambda x: x.fantasy_points, reverse=True)
 WRs.sort(key=lambda x: x.fantasy_points, reverse=True)
 TEs.sort(key=lambda x: x.fantasy_points, reverse=True)
 
-print len(QBs)
-print len(RBs)
-print len(WRs)
-print len(TEs)
-print len(DSTs)
-
-'''
-for p in QBs:
-    print p
-
-for p in WRs:
-    print p
-
-for p in TEs:
-    print p
-
-for p in RBs:
-    print p
-
-for p in DSTs:
-    print p
-'''
-
-
 candidates = list()
 for q in QBs:
     roster = Roster()
     roster.addPlayer(q, False)
     addWR(candidates, roster, RBs, WRs, TEs, DSTs)
 
-
-l = list(candidates)
+l = list(candidates[:100])
 l.sort(key=lambda x: x.projectedPoints, reverse=True)
-output = ""
+output = []
 for r in l:
-    output += r.to_csv() + "\n"
-    print str(r)
+    output.append(r.to_dict())
 
-with open("./roster.csv", "w") as f:
-    f.write(output)
-    f.close()
+print json.dumps(output)

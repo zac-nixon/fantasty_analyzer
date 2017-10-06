@@ -1,5 +1,5 @@
 import sys
-
+import json
 QB = 'QB'
 RB = 'RB'
 WR = 'WR'
@@ -138,3 +138,14 @@ class Player:
 
     def __str__(self):
         return "name = " + self.name + " position = " + self.position + " salary = " + str(self.salary) + " pts = " + str(self.fantasy_points) + " $/pt = " + str(self.salary / self.fantasy_points) + " team = " + self.team
+
+    def to_dict(self):
+        d = {}
+        d['name'] = self.name
+        d['position'] = self.position
+        d['salary'] = self.salary
+        d['points'] = self.fantasy_points
+        d['team'] = self.team
+        if self.oppositionObj:
+            d['opposition'] = self.oppositionObj.name
+        return d

@@ -1,17 +1,14 @@
 from player import *
 import copy
+import json
 
 QBLimit = 1
 RBLimit = 2
 WRLimit = 3
 TELimit = 1
-FlexLimit = 1
 DSTLimit = 1
 cap = 50000
-
-
 class Roster:
-
     def __init__(self):
         self.expenditure = 0
         self.projectedPoints = 0
@@ -19,8 +16,8 @@ class Roster:
         self.RBs = []
         self.WRs = []
         self.TEs = []
-        self.FLEX = []
         self.DST = []
+        self.recommendedFlex = []
 
     def canAfford(self, player):
         if self.expenditure + player.salary <= cap:
@@ -62,8 +59,6 @@ class Roster:
             l = self.TEs
         if position == DST:
             l = self.DST
-        if position == FLEX:
-            l = self.FLEX
 
         p = l.pop()
         self.expenditure -= p.salary
@@ -93,12 +88,6 @@ class Roster:
             return True
         return False
 
-    def addFLEX(self, FLEX):
-        if len(self.FLEX) + 1 <= FlexLimit:
-            self.FLEX.append(FLEX)
-            return True
-        return False
-
     def addDST(self, D):
         if len(self.DST) + 1 <= DSTLimit:
             self.DST.append(D)
@@ -106,43 +95,50 @@ class Roster:
         return False
 
     def isValid(self):
-        return len(self.QBs) == QBLimit and len(self.RBs) == RBLimit and len(self.WRs) == WRLimit and len(self.TEs) == TELimit and len(self.FLEX) == FlexLimit and len(self.DST) == DSTLimit and self.expenditure <= cap
+        return len(self.QBs) == QBLimit and len(self.RBs) == RBLimit and len(self.WRs) == WRLimit and len(self.TEs) == TELimit and len(self.DST) == DSTLimit and self.expenditure <= cap
 
     def __str__(self):
-        s = ""
+        d = {}
         for i, v in enumerate(self.QBs):
-            s += "QB " + str(i + 1) + ": " + str(v) + "\n"
+            d['QB'+ str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.RBs):
-            s += "RB " + str(i + 1) + ": " + str(v) + "\n"
+            d['RB'+ str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.WRs):
-            s += "WR " + str(i + 1) + ": " + str(v) + "\n"
+            d['WR'+ str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.TEs):
-            s += "TE " + str(i + 1) + ": " + str(v) + "\n"
-        for i, v in enumerate(self.FLEX):
-            s += "FLEX " + str(i + 1) + ": " + str(v) + "\n"
+            d['TE'+ str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.DST):
-            s += "DST " + str(i + 1) + ": " + str(v) + "\n"
+            d['DST'+ str(i + 1)] = v.to_dict()
 
-        s += "Cost = " + str(self.expenditure) + "," + str(cap) + \
-            " projected = " + str(self.projectedPoints)
-        return s
+        d['Cost'] = str(self.expenditure)
+        d['Projected'] = str(self.projectedPoints)
 
-    def to_csv(self):
-        s = ""
+        for i,v in enumerate(self.recommendedFlex):
+            d['FLEX' + str(i+1)] = v.to_dict()
+
+        return json.dumps(d)
+
+    def to_dict(self):
+        d = {}
         for i, v in enumerate(self.QBs):
-            s += v.name + " " + str(v.fantasy_points) + ","
+            d['QB'+ str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.RBs):
-            s += v.name + " " + str(v.fantasy_points) + ","
+            d['RB'+ str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.WRs):
-            s += v.name + " " + str(v.fantasy_points) + ","
+            d['WR'+ str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.TEs):
-            s += v.name + " " + str(v.fantasy_points) + ","
-        for i, v in enumerate(self.FLEX):
-            s += v.name + " " + str(v.fantasy_points) + ","
+            d['TE'+ str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.DST):
-            s += v.name + " " + str(v.fantasy_points) + ","
-        s += str(self.expenditure)
-        return s
+            d['DST'+ str(i + 1)] = v.to_dict()
+
+        d['Metadata'] = {}
+        d['Metadata']['Cost'] = str(self.expenditure)
+        d['Metadata']['Projected'] = str(self.projectedPoints)
+
+        for i,v in enumerate(self.recommendedFlex):
+            d['Metadata']['FLEX' + str(i+1)] = v.to_dict()
+
+        return d
 
     def __hash__(self):
         s = ""
@@ -153,8 +149,6 @@ class Roster:
         for v in self.WRs:
             s += v.name
         for v in self.TEs:
-            s += v.name
-        for v in self.FLEX:
             s += v.name
         for v in self.DST:
             s += v.name
@@ -174,6 +168,5 @@ class Roster:
         r.RBs = copy.deepcopy(self.RBs)
         r.WRs = copy.deepcopy(self.WRs)
         r.TEs = copy.deepcopy(self.TEs)
-        r.FLEX = copy.deepcopy(self.FLEX)
         r.DST = copy.deepcopy(self.DST)
         return r
