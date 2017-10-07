@@ -8,7 +8,10 @@ WRLimit = 3
 TELimit = 1
 DSTLimit = 1
 cap = 50000
+
+
 class Roster:
+
     def __init__(self):
         self.expenditure = 0
         self.projectedPoints = 0
@@ -100,43 +103,43 @@ class Roster:
     def __str__(self):
         d = {}
         for i, v in enumerate(self.QBs):
-            d['QB'+ str(i + 1)] = v.to_dict()
+            d['QB' + str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.RBs):
-            d['RB'+ str(i + 1)] = v.to_dict()
+            d['RB' + str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.WRs):
-            d['WR'+ str(i + 1)] = v.to_dict()
+            d['WR' + str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.TEs):
-            d['TE'+ str(i + 1)] = v.to_dict()
+            d['TE' + str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.DST):
-            d['DST'+ str(i + 1)] = v.to_dict()
+            d['DST' + str(i + 1)] = v.to_dict()
 
         d['Cost'] = str(self.expenditure)
         d['Projected'] = str(self.projectedPoints)
 
-        for i,v in enumerate(self.recommendedFlex):
-            d['FLEX' + str(i+1)] = v.to_dict()
+        for i, v in enumerate(self.recommendedFlex):
+            d['FLEX' + str(i + 1)] = v.to_dict()
 
         return json.dumps(d)
 
     def to_dict(self):
         d = {}
         for i, v in enumerate(self.QBs):
-            d['QB'+ str(i + 1)] = v.to_dict()
+            d['QB' + str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.RBs):
-            d['RB'+ str(i + 1)] = v.to_dict()
+            d['RB' + str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.WRs):
-            d['WR'+ str(i + 1)] = v.to_dict()
+            d['WR' + str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.TEs):
-            d['TE'+ str(i + 1)] = v.to_dict()
+            d['TE' + str(i + 1)] = v.to_dict()
         for i, v in enumerate(self.DST):
-            d['DST'+ str(i + 1)] = v.to_dict()
+            d['DST' + str(i + 1)] = v.to_dict()
 
         d['Metadata'] = {}
         d['Metadata']['Cost'] = str(self.expenditure)
         d['Metadata']['Projected'] = str(self.projectedPoints)
 
-        for i,v in enumerate(self.recommendedFlex):
-            d['Metadata']['FLEX' + str(i+1)] = v.to_dict()
+        for i, v in enumerate(self.recommendedFlex):
+            d['Metadata']['FLEX' + str(i + 1)] = v.to_dict()
 
         return d
 

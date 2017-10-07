@@ -10,12 +10,11 @@ prevIndex = 0
 indx = len(l) / cores
 ls = []
 for i in range(cores):
-    curIndex = prevIndex + indx
-    ls.append(l[prevIndex:curIndex])
-    prevIndex = curIndex
-
-if len(l) % cores != 0:
-    ls[cores - 1].append(l[(len(l) - 1)])
+    ls.append([])
+i = 0
+for s in l:
+    ls[i].append(s)
+    i = (i + 1) % cores
 
 for a in ls:
     print a

@@ -4,9 +4,12 @@ from roster import *
 from adjust import *
 from create import *
 import multiprocessing
+from multiprocessing import Process
 import sys
 
 # Assigns the defense object to the particular player
+
+
 def correlate(players, m):
     for p in players:
         opposition = p.opposition.replace('@', '')
@@ -36,7 +39,7 @@ DSTs = fetchDSTs()
 dMap = hashDST(DSTs)
 
 # Black list
-fList = ['TB','NE','KC','Hou', 'Min', 'Chi']
+fList = ['TB', 'NE', 'KC', 'Hou', 'Min', 'Chi']
 QBs = blackList(fList, QBs)
 RBs = blackList(fList, RBs)
 WRs = blackList(fList, WRs)
@@ -66,16 +69,47 @@ RBs.sort(key=lambda x: x.fantasy_points, reverse=True)
 WRs.sort(key=lambda x: x.fantasy_points, reverse=True)
 TEs.sort(key=lambda x: x.fantasy_points, reverse=True)
 
-candidates = list()
+# Spawn off processes to calculate rosters
+cores = multiprocessing.cpu_count()
+pid = sys.argv[1]
+qbsBrokenDown = []
+for i in range(cores):
+    qbsBrokenDown.append([])
+
+i = 0
 for q in QBs:
+    qbsBrokenDown[i].append(q)
+    i = (i + 1) % cores
+
+candidates = list()
+length = len(qbsBrokenDown[int(pid)])
+for i, q in enumerate(qbsBrokenDown[int(pid)]):
+    print 'debug: process ' + pid + ' is on qb ' + q.name + ' done % = ' + str(float(i) / float(length))
     roster = Roster()
     roster.addPlayer(q, False)
-    addWR(candidates, roster, RBs, WRs, TEs, DSTs)
+    addWR(candidates, roster, RBs, WRs, TEs, DSTs, pid)
+    candidates = candidates[:100]
+    candidates.sort(key=lambda x: x.projectedPoints, reverse=True)
 
-l = list(candidates[:100])
-l.sort(key=lambda x: x.projectedPoints, reverse=True)
 output = []
-for r in l:
+for r in candidates:
     output.append(r.to_dict())
+s = json.dumps(output)
+with open("/tmp/rosters-try" + pid, "w") as f:
+    print 'debug: process ' + pid + ' is writing file'
+    f.write(s)
+    f.close()
 
-print json.dumps(output)
+sys.exit(0)
+# Merge the rosters together
+candidates = []
+for i in range(cores):
+    with open("/tmp/rosters" + str(i), "r") as f:
+        data = json.load(f)
+    for d in data:
+        candidates.append(d)
+    candidates.sort(key=lambda x: x['Metadata']['Projected'], reverse=True)
+    candidates = candidates[:1]
+
+for c in candidates:
+    print json.dumps(c)
